@@ -1,0 +1,11 @@
+{
+  "private": true,
+  "name": "bb_academy_hrms",
+  "description": "BB HR - Vue PWA for Black Building Academy staff (frontend lives in ./frontend)",
+  "scripts": {
+    "postinstall": "cd frontend && npm ci --no-audit --no-fund",
+    "dev": "cd frontend && npm run dev",
+    "build": "cd frontend && npm run build",
+    "test": "cd frontend && npm test"
+  }
+}

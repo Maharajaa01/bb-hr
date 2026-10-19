@@ -1,0 +1,90 @@
+{
+ "charts": [
+  {
+   "chart_name": "My Attendance (6 Months)",
+   "label": "My Attendance (6 Months)"
+  }
+ ],
+ "content": "[{\"id\": \"55c02e750b\", \"type\": \"header\", \"data\": {\"col\": 12, \"text\": \"<span class=\\\"h4\\\"><b>My day</b></span>\"}}, {\"id\": \"1ead99e72e\", \"type\": \"number_card\", \"data\": {\"col\": 4, \"number_card_name\": \"My Status Today\"}}, {\"id\": \"85a23158fa\", \"type\": \"number_card\", \"data\": {\"col\": 4, \"number_card_name\": \"My Present Days (Month)\"}}, {\"id\": \"52e0084b0e\", \"type\": \"number_card\", \"data\": {\"col\": 4, \"number_card_name\": \"My Absent Days (Month)\"}}, {\"id\": \"3f3ccd9081\", \"type\": \"number_card\", \"data\": {\"col\": 4, \"number_card_name\": \"My Hours (Month)\"}}, {\"id\": \"0b8f19977b\", \"type\": \"number_card\", \"data\": {\"col\": 4, \"number_card_name\": \"My Last Net Pay\"}}, {\"id\": \"70addc480d\", \"type\": \"number_card\", \"data\": {\"col\": 4, \"number_card_name\": \"My Next Holiday\"}}, {\"id\": \"5a9b7f5504\", \"type\": \"chart\", \"data\": {\"col\": 12, \"chart_name\": \"My Attendance (6 Months)\"}}, {\"id\": \"fa14be4a43\", \"type\": \"header\", \"data\": {\"col\": 12, \"text\": \"<span class=\\\"h4\\\"><b>Quick access</b></span>\"}}, {\"id\": \"f8f89b81a7\", \"type\": \"shortcut\", \"data\": {\"col\": 3, \"shortcut_name\": \"Check In / Out\"}}, {\"id\": \"d7f03e05e4\", \"type\": \"shortcut\", \"data\": {\"col\": 3, \"shortcut_name\": \"My Attendance\"}}, {\"id\": \"41c62ba1d2\", \"type\": \"shortcut\", \"data\": {\"col\": 3, \"shortcut_name\": \"My Payslips\"}}, {\"id\": \"c434de2955\", \"type\": \"shortcut\", \"data\": {\"col\": 3, \"shortcut_name\": \"Holidays\"}}]",
+ "creation": "2026-10-16 17:11:50.366016",
+ "custom_blocks": [],
+ "docstatus": 0,
+ "doctype": "Workspace",
+ "hide_custom": 0,
+ "icon": "user",
+ "idx": 0,
+ "indicator_color": "blue",
+ "is_hidden": 0,
+ "label": "My HR",
+ "links": [],
+ "modified": "2026-10-16 19:00:00",
+ "modified_by": "Administrator",
+ "module": "BB_Academy_HRMS",
+ "name": "My HR",
+ "number_cards": [
+  {
+   "label": "My Status Today",
+   "number_card_name": "My Status Today"
+  },
+  {
+   "label": "My Present Days (Month)",
+   "number_card_name": "My Present Days (Month)"
+  },
+  {
+   "label": "My Absent Days (Month)",
+   "number_card_name": "My Absent Days (Month)"
+  },
+  {
+   "label": "My Hours (Month)",
+   "number_card_name": "My Hours (Month)"
+  },
+  {
+   "label": "My Last Net Pay",
+   "number_card_name": "My Last Net Pay"
+  },
+  {
+   "label": "My Next Holiday",
+   "number_card_name": "My Next Holiday"
+  }
+ ],
+ "owner": "Administrator",
+ "public": 1,
+ "quick_lists": [],
+ "roles": [
+  {
+   "role": "Employee"
+  }
+ ],
+ "sequence_id": 0.6,
+ "shortcuts": [
+  {
+   "color": "Blue",
+   "doc_view": "",
+   "label": "Check In / Out",
+   "type": "URL",
+   "url": "/bbhr/check-in"
+  },
+  {
+   "color": "Blue",
+   "doc_view": "",
+   "label": "My Attendance",
+   "type": "URL",
+   "url": "/bbhr/attendance"
+  },
+  {
+   "color": "Green",
+   "doc_view": "",
+   "label": "My Payslips",
+   "type": "URL",
+   "url": "/bbhr/salary"
+  },
+  {
+   "color": "Cyan",
+   "doc_view": "",
+   "label": "Holidays",
+   "type": "URL",
+   "url": "/bbhr/holidays"
+  }
+ ],
+ "title": "My HR"
+}

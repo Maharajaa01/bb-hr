@@ -1,0 +1,277 @@
+{
+ "charts": [
+  {
+   "chart_name": "BB HR Attendance (30 Days)",
+   "label": "Attendance (30 Days)"
+  },
+  {
+   "chart_name": "BB HR Department Presence Today",
+   "label": "Department Presence Today"
+  }
+ ],
+ "content": "[{\"id\": \"d421e19960\", \"type\": \"header\", \"data\": {\"col\": 12, \"text\": \"<span class=\\\"h4\\\"><b>Today</b></span>\"}}, {\"id\": \"c39ef77fcb\", \"type\": \"number_card\", \"data\": {\"col\": 4, \"number_card_name\": \"Present Today\"}}, {\"id\": \"d75c900a23\", \"type\": \"number_card\", \"data\": {\"col\": 4, \"number_card_name\": \"In Now\"}}, {\"id\": \"a7abb950d9\", \"type\": \"number_card\", \"data\": {\"col\": 4, \"number_card_name\": \"Late Today\"}}, {\"id\": \"14236842d0\", \"type\": \"number_card\", \"data\": {\"col\": 4, \"number_card_name\": \"Not Marked Today\"}}, {\"id\": \"b99b3db8cb\", \"type\": \"number_card\", \"data\": {\"col\": 4, \"number_card_name\": \"On Leave Today\"}}, {\"id\": \"c63ec58ee7\", \"type\": \"number_card\", \"data\": {\"col\": 4, \"number_card_name\": \"Staff Without Login\"}}, {\"id\": \"4b4ff3c7a4\", \"type\": \"chart\", \"data\": {\"col\": 12, \"chart_name\": \"Attendance (30 Days)\"}}, {\"id\": \"d21573c841\", \"type\": \"chart\", \"data\": {\"col\": 12, \"chart_name\": \"Department Presence Today\"}}, {\"id\": \"f7037edc2d\", \"type\": \"header\", \"data\": {\"col\": 12, \"text\": \"<span class=\\\"h4\\\"><b>Quick access</b></span>\"}}, {\"id\": \"88a59d9dc6\", \"type\": \"shortcut\", \"data\": {\"col\": 3, \"shortcut_name\": \"Open BB HR App\"}}, {\"id\": \"129ecd8712\", \"type\": \"shortcut\", \"data\": {\"col\": 3, \"shortcut_name\": \"BB HR Settings\"}}, {\"id\": \"0f6544ef12\", \"type\": \"shortcut\", \"data\": {\"col\": 3, \"shortcut_name\": \"Employee\"}}, {\"id\": \"bc253517d2\", \"type\": \"shortcut\", \"data\": {\"col\": 3, \"shortcut_name\": \"Attendance\"}}, {\"id\": \"ea4cede039\", \"type\": \"shortcut\", \"data\": {\"col\": 3, \"shortcut_name\": \"Employee Checkin\"}}, {\"id\": \"abd3b1d869\", \"type\": \"shortcut\", \"data\": {\"col\": 3, \"shortcut_name\": \"Salary Slip\"}}, {\"id\": \"9b99576aaa\", \"type\": \"shortcut\", \"data\": {\"col\": 3, \"shortcut_name\": \"Holiday List\"}}, {\"id\": \"a56906c399\", \"type\": \"shortcut\", \"data\": {\"col\": 3, \"shortcut_name\": \"Shift Assignment\"}}, {\"id\": \"ac35769133\", \"type\": \"spacer\", \"data\": {\"col\": 12}}, {\"id\": \"03c42d642c\", \"type\": \"card\", \"data\": {\"col\": 4, \"card_name\": \"Attendance & Check-ins\"}}, {\"id\": \"1afb438230\", \"type\": \"card\", \"data\": {\"col\": 4, \"card_name\": \"Payroll\"}}, {\"id\": \"2210034643\", \"type\": \"card\", \"data\": {\"col\": 4, \"card_name\": \"Setup\"}}]",
+ "creation": "2026-10-16 17:11:50.198190",
+ "custom_blocks": [],
+ "docstatus": 0,
+ "doctype": "Workspace",
+ "hide_custom": 0,
+ "icon": "users",
+ "idx": 0,
+ "indicator_color": "blue",
+ "is_hidden": 0,
+ "label": "BB HR",
+ "links": [
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Attendance & Check-ins",
+   "link_count": 4,
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Attendance",
+   "link_count": 0,
+   "link_to": "Attendance",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Employee Checkin",
+   "link_count": 0,
+   "link_to": "Employee Checkin",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Monthly Attendance Sheet",
+   "link_count": 0,
+   "link_to": "Monthly Attendance Sheet",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Shift Type",
+   "link_count": 0,
+   "link_to": "Shift Type",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Payroll",
+   "link_count": 4,
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Salary Slip",
+   "link_count": 0,
+   "link_to": "Salary Slip",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Payroll Entry",
+   "link_count": 0,
+   "link_to": "Payroll Entry",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Salary Structure Assignment",
+   "link_count": 0,
+   "link_to": "Salary Structure Assignment",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Salary Register",
+   "link_count": 0,
+   "link_to": "Salary Register",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Setup",
+   "link_count": 4,
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "BB HR Settings",
+   "link_count": 0,
+   "link_to": "BB HR Settings",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Employee",
+   "link_count": 0,
+   "link_to": "Employee",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Holiday List",
+   "link_count": 0,
+   "link_to": "Holiday List",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Department",
+   "link_count": 0,
+   "link_to": "Department",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  }
+ ],
+ "modified": "2026-10-16 19:00:00",
+ "modified_by": "Administrator",
+ "module": "BB_Academy_HRMS",
+ "name": "BB HR",
+ "number_cards": [
+  {
+   "label": "Present Today",
+   "number_card_name": "BB HR Present Today"
+  },
+  {
+   "label": "In Now",
+   "number_card_name": "BB HR In Now"
+  },
+  {
+   "label": "Late Today",
+   "number_card_name": "BB HR Late Today"
+  },
+  {
+   "label": "Not Marked Today",
+   "number_card_name": "BB HR Not Marked Today"
+  },
+  {
+   "label": "On Leave Today",
+   "number_card_name": "BB HR On Leave Today"
+  },
+  {
+   "label": "Staff Without Login",
+   "number_card_name": "BB HR Staff Without Login"
+  }
+ ],
+ "owner": "Administrator",
+ "public": 1,
+ "quick_lists": [],
+ "roles": [
+  {
+   "role": "HR Manager"
+  },
+  {
+   "role": "HR User"
+  },
+  {
+   "role": "System Manager"
+  }
+ ],
+ "sequence_id": 0.5,
+ "shortcuts": [
+  {
+   "color": "Blue",
+   "doc_view": "",
+   "label": "Open BB HR App",
+   "type": "URL",
+   "url": "/bbhr/hr"
+  },
+  {
+   "color": "Blue",
+   "doc_view": "",
+   "label": "BB HR Settings",
+   "link_to": "BB HR Settings",
+   "type": "DocType"
+  },
+  {
+   "color": "Blue",
+   "doc_view": "List",
+   "label": "Employee",
+   "link_to": "Employee",
+   "stats_filter": "{\"status\": \"Active\"}",
+   "type": "DocType"
+  },
+  {
+   "color": "Blue",
+   "doc_view": "List",
+   "label": "Attendance",
+   "link_to": "Attendance",
+   "type": "DocType"
+  },
+  {
+   "color": "Blue",
+   "doc_view": "List",
+   "label": "Employee Checkin",
+   "link_to": "Employee Checkin",
+   "type": "DocType"
+  },
+  {
+   "color": "Green",
+   "doc_view": "List",
+   "label": "Salary Slip",
+   "link_to": "Salary Slip",
+   "type": "DocType"
+  },
+  {
+   "color": "Cyan",
+   "doc_view": "List",
+   "label": "Holiday List",
+   "link_to": "Holiday List",
+   "type": "DocType"
+  },
+  {
+   "color": "Cyan",
+   "doc_view": "List",
+   "label": "Shift Assignment",
+   "link_to": "Shift Assignment",
+   "type": "DocType"
+  }
+ ],
+ "title": "BB HR"
+}

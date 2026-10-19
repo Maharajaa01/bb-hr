@@ -1,0 +1,133 @@
+{
+ "actions": [],
+ "creation": "2026-10-16 10:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "attendance_section",
+  "enable_geofence",
+  "default_radius",
+  "accuracy_tolerance",
+  "max_accuracy",
+  "column_break_a",
+  "require_photo",
+  "min_gap_seconds",
+  "create_attendance",
+  "locations_section",
+  "office_locations"
+ ],
+ "fields": [
+  {
+   "fieldname": "attendance_section",
+   "fieldtype": "Section Break",
+   "label": "Check-in Rules"
+  },
+  {
+   "default": "1",
+   "description": "Reject check-ins made outside every enabled office location.",
+   "fieldname": "enable_geofence",
+   "fieldtype": "Check",
+   "label": "Enable Geofence"
+  },
+  {
+   "default": "150",
+   "fieldname": "default_radius",
+   "fieldtype": "Int",
+   "label": "Default Radius (m)",
+   "non_negative": 1
+  },
+  {
+   "default": "50",
+   "description": "Up to this many metres of reported GPS inaccuracy is added to the radius, so a weak fix inside the building is not rejected.",
+   "fieldname": "accuracy_tolerance",
+   "fieldtype": "Int",
+   "label": "GPS Accuracy Tolerance (m)",
+   "non_negative": 1
+  },
+  {
+   "default": "200",
+   "description": "A location fix less precise than this is refused; the employee is asked to retry outdoors or with GPS on.",
+   "fieldname": "max_accuracy",
+   "fieldtype": "Int",
+   "label": "Max Accepted GPS Accuracy (m)",
+   "non_negative": 1
+  },
+  {
+   "fieldname": "column_break_a",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "1",
+   "fieldname": "require_photo",
+   "fieldtype": "Check",
+   "label": "Require Selfie Photo"
+  },
+  {
+   "default": "60",
+   "description": "Minimum time between two punches of the same employee.",
+   "fieldname": "min_gap_seconds",
+   "fieldtype": "Int",
+   "label": "Minimum Gap Between Punches (s)",
+   "non_negative": 1
+  },
+  {
+   "default": "1",
+   "description": "Payroll here is attendance-based. When on, the first check-in of the day creates and submits a Present Attendance record, and each check-out updates its working hours.",
+   "fieldname": "create_attendance",
+   "fieldtype": "Check",
+   "label": "Create Attendance From Check-ins"
+  },
+  {
+   "fieldname": "locations_section",
+   "fieldtype": "Section Break",
+   "label": "Office Locations"
+  },
+  {
+   "fieldname": "office_locations",
+   "fieldtype": "Table",
+   "label": "Office Locations",
+   "options": "BB HR Office Location"
+  }
+ ],
+ "issingle": 1,
+ "links": [],
+ "modified": "2026-10-16 19:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "BB_Academy_HRMS",
+ "name": "BB HR Settings",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "HR Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "read": 1,
+   "role": "HR User"
+  },
+  {
+   "read": 1,
+   "role": "Employee"
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

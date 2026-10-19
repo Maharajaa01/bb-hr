@@ -39,3 +39,8 @@ This app can use GitHub Actions for CI. The following workflows are configured:
 ### License
 
 mit
+
+## BB HR (staff PWA)
+
+Mobile-first attendance / payslip / holiday app at `/bbhr`. See [docs/BBHR.md](docs/BBHR.md) for
+architecture, setup, testing and deployment, and [docs/CHECKLIST.md](docs/CHECKLIST.md) for status.

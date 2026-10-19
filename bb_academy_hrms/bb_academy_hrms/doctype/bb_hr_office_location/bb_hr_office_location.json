@@ -1,0 +1,27 @@
+{
+ "actions": [],
+ "creation": "2026-10-16 10:00:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": ["location_name", "enabled", "column_break_1", "latitude", "longitude", "radius"],
+ "fields": [
+  {"fieldname": "location_name", "fieldtype": "Data", "in_list_view": 1, "label": "Location Name", "reqd": 1},
+  {"default": "1", "fieldname": "enabled", "fieldtype": "Check", "in_list_view": 1, "label": "Enabled"},
+  {"fieldname": "column_break_1", "fieldtype": "Column Break"},
+  {"fieldname": "latitude", "fieldtype": "Float", "in_list_view": 1, "label": "Latitude", "precision": "7", "reqd": 1},
+  {"fieldname": "longitude", "fieldtype": "Float", "in_list_view": 1, "label": "Longitude", "precision": "7", "reqd": 1},
+  {"description": "Allowed distance in metres. Leave 0 to use the default radius from settings.", "fieldname": "radius", "fieldtype": "Int", "in_list_view": 1, "label": "Radius (m)"}
+ ],
+ "istable": 1,
+ "links": [],
+ "modified": "2026-10-16 10:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "BB_Academy_HRMS",
+ "name": "BB HR Office Location",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

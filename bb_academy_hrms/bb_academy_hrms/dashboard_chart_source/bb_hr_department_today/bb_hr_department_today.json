@@ -1,0 +1,13 @@
+{
+ "creation": "2026-10-16 17:10:01.879129",
+ "docstatus": 0,
+ "doctype": "Dashboard Chart Source",
+ "idx": 0,
+ "modified": "2026-10-16 17:10:01.879129",
+ "modified_by": "Administrator",
+ "module": "BB_Academy_HRMS",
+ "name": "BB HR Department Today",
+ "owner": "Administrator",
+ "source_name": "BB HR Department Today",
+ "timeseries": 0
+}

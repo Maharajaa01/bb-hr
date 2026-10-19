@@ -247,3 +247,14 @@ app_license = "mit"
 # List of apps whose translatable strings should be excluded from this app's translations.
 # ignore_translatable_strings_from = []
 
+
+# BB HR (Vue PWA at /bbhr) ------------------------------------------------------
+
+after_install = "bb_academy_hrms.setup.install.after_install"
+after_migrate = "bb_academy_hrms.setup.install.after_migrate"
+
+website_route_rules = [
+	{"from_route": "/bbhr/<path:app_path>", "to_route": "bbhr"},
+]
+
+after_request = ["bb_academy_hrms.utils.http.after_request"]
