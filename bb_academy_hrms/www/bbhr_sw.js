@@ -17,7 +17,7 @@
  *      so a half-finished check-in is never interrupted by a reload.
  */
 
-const CACHE_VERSION = "1792158590105"
+const CACHE_VERSION = "1792468167035"
 const PRECACHE = [
 	"/assets/bb_academy_hrms/bbhr/assets/AppBar.vue_vue_type_script_setup_true_lang.9r4ypaQc.js",
 	"/assets/bb_academy_hrms/bbhr/assets/AppButton.vue_vue_type_script_setup_true_lang.xK-veB-U.js",
