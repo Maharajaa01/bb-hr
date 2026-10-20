@@ -71,5 +71,5 @@ router.beforeEach(async (to) => {
 })
 
 router.afterEach((to) => {
-	document.title = to.meta.title ? `${to.meta.title} · BB HR` : "BB HR"
+	document.title = to.meta.title ? `${to.meta.title} · BB HRMS` : "BB HRMS"
 })

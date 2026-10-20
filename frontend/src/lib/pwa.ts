@@ -1,7 +1,9 @@
 /**
  * Service worker registration and the install prompt.
  *
- * The worker lives at /bbhr_sw.js (site root) so it can control /bbhr/*.
+ * The worker lives at /bbhr_sw.js (site root) so it can control /bbhr and /bbhr/*.
+ * The scope is "/bbhr" without a trailing slash because Frappe redirects /bbhr/ to /bbhr;
+ * a "/bbhr/" scope left the home page out of scope, so installed apps showed the browser bar.
  * A new worker never takes over silently: it waits until the user taps "Update",
  * so nobody loses a half-finished check-in to a background reload.
  */
@@ -16,7 +18,11 @@ export function registerServiceWorker(): void {
 	if (!("serviceWorker" in navigator) || import.meta.env.DEV) return
 	window.addEventListener("load", async () => {
 		try {
-			const reg = await navigator.serviceWorker.register("/bbhr_sw.js", { scope: "/bbhr/" })
+			const reg = await navigator.serviceWorker.register("/bbhr_sw.js", { scope: "/bbhr" })
+			// drop the registration left by builds that used the old "/bbhr/" scope
+			for (const old of await navigator.serviceWorker.getRegistrations()) {
+				if (old.scope.endsWith("/bbhr/")) old.unregister()
+			}
 			const track = (w: ServiceWorker | null) => {
 				if (!w) return
 				w.addEventListener("statechange", () => {

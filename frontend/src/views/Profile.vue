@@ -61,7 +61,7 @@ const active = computed(() => session.employee?.status === "Active")
 				<Smartphone class="h-5 w-5 text-ink-500" />
 				<p class="flex-1 text-[14px]">
 					<template v-if="standalone">Installed as an app</template>
-					<template v-else-if="canInstall">Install BB HR for one-tap check-in</template>
+					<template v-else-if="canInstall">Install BB HRMS for one-tap check-in</template>
 					<template v-else-if="ios">On iPhone: Share → "Add to Home Screen"</template>
 					<template v-else>Browser menu → "Install app"</template>
 				</p>

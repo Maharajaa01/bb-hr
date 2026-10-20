@@ -1,5 +1,5 @@
 /**
- * BB HR service worker.
+ * BB HRMS service worker.
  *
  * Source of truth: frontend/sw-template.js. Built into bb_academy_hrms/www/bbhr_sw.js
  * by frontend/scripts/make-page.mjs, which stamps CACHE_VERSION and the PRECACHE
@@ -26,14 +26,14 @@ const APP_SCOPE = "/bbhr"
 const OFFLINE_HTML = `<!doctype html>
 <html lang="en"><head><meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#048EFF"><title>Offline · BB HR</title>
+<meta name="theme-color" content="#048EFF"><title>Offline · BB HRMS</title>
 <style>
 body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:#FFFFFF;color:#212121;font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
 .c{max-width:22rem;padding:2rem;text-align:center}.b{width:3.5rem;height:3.5rem;border-radius:1rem;background:#048EFF;color:#fff;display:grid;place-items:center;margin:0 auto 1.25rem;font-weight:900}
 h1{font-size:1.25rem;margin:0 0 .5rem}p{color:#808080;margin:0 0 1.5rem}
 button{min-height:3rem;padding:0 1.5rem;border:0;border-radius:.75rem;background:#048EFF;color:#fff;font:inherit;font-weight:700;cursor:pointer}
 </style></head><body><main class="c"><div class="b">BB</div><h1>You're offline</h1>
-<p>BB HR needs a connection to check you in and show your attendance and payslips. Nothing is recorded while offline.</p>
+<p>BB HRMS needs a connection to check you in and show your attendance and payslips. Nothing is recorded while offline.</p>
 <button onclick="location.reload()">Try again</button></main></body></html>`
 
 self.addEventListener("install", (event) => {

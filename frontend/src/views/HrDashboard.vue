@@ -24,7 +24,7 @@ const setupIssues = computed(() => {
 	if (!s) return []
 	const out: { text: string; href: string }[] = []
 	if (s.geofence && !s.office_locations) out.push({ text: "No office location configured - every check-in will be refused.", href: "/app/bb-hr-settings" })
-	if (s.employees_without_user) out.push({ text: `${s.employees_without_user} active employees have no login linked, so they cannot use BB HR.`, href: "/app/employee?status=Active&user_id=%5B%22is%22%2C%22not%20set%22%5D" })
+	if (s.employees_without_user) out.push({ text: `${s.employees_without_user} active employees have no login linked, so they cannot use BB HRMS.`, href: "/app/employee?status=Active&user_id=%5B%22is%22%2C%22not%20set%22%5D" })
 	if (s.employees_without_manager) out.push({ text: `${s.employees_without_manager} active employees have no Reports To, so no manager sees them.`, href: "/app/employee?status=Active&reports_to=%5B%22is%22%2C%22not%20set%22%5D" })
 	return out
 })

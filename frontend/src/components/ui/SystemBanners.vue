@@ -14,7 +14,7 @@ const online = useOnline()
 			You're offline. Check-in, payslips and live data need a connection.
 		</div>
 		<div v-if="updateReady" class="flex items-center justify-center gap-3 bg-brand-50 px-4 py-2 text-sm text-brand-700" role="status">
-			A new version of BB HR is ready.
+			A new version of BB HRMS is ready.
 			<button class="inline-flex items-center gap-1 font-semibold underline" @click="applyUpdate"><RefreshCw class="h-3.5 w-3.5" /> Update</button>
 		</div>
 	</div>
