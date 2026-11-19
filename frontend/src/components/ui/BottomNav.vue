@@ -28,7 +28,7 @@ function isActive(to: string) {
 </script>
 
 <template>
-	<nav class="fixed inset-x-0 bottom-0 z-30 mx-auto max-w-app border-t border-ink-200 bg-white safe-bottom" aria-label="Main">
+	<nav class="fixed inset-x-0 bottom-0 z-30 mx-auto max-w-app border-t border-ink-200 bg-white safe-bottom lg:hidden" aria-label="Main">
 		<div class="relative flex h-16 items-stretch">
 			<RouterLink v-for="i in left" :key="i.label" :to="i.to" class="flex flex-1 flex-col items-center justify-center gap-0.5 text-[11px] font-medium" :class="isActive(i.to) ? 'text-brand-500' : 'text-ink-500'" :aria-current="isActive(i.to) ? 'page' : undefined">
 				<component :is="i.icon" class="h-6 w-6" :stroke-width="1.7" />{{ i.label }}

@@ -1,0 +1,6 @@
+import{_ as a}from"./AppButton.vue_vue_type_script_setup_true_lang.CacXhPgM.js";import{_ as s}from"./AppBar.vue_vue_type_script_setup_true_lang.CN3dbxpz.js";import{_ as r}from"./EmptyState.vue_vue_type_script_setup_true_lang.D616fOWb.js";import{q as n,d as c,c as i,e as o,a as m,l as t,h as d,o as l,f as p}from"./index.pl5I_yFK.js";import"./_plugin-vue_export-helper.DlAUqK2U.js";import"./ui.M7xJMtkG.js";import"./Spot.vue_vue_type_script_setup_true_lang.Bar-YjrD.js";/**
+ * @license lucide-vue-next v0.468.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */const _=n("CompassIcon",[["path",{d:"m16.24 7.76-1.804 5.411a2 2 0 0 1-1.265 1.265L7.76 16.24l1.804-5.411a2 2 0 0 1 1.265-1.265z",key:"9ktpf1"}],["circle",{cx:"12",cy:"12",r:"10",key:"1mglay"}]]),f={class:"card lg:mx-auto lg:max-w-xl"},B=c({__name:"NotFound",setup(u){return(x,e)=>(l(),i("div",null,[o(s,{title:"Not found"}),m("div",f,[o(r,{icon:d(_),title:"Page not found",description:"The link may be old or mistyped."},{default:t(()=>[o(a,{to:"/",variant:"secondary"},{default:t(()=>e[0]||(e[0]=[p("Go home")])),_:1})]),_:1},8,["icon"])])]))}});export{B as default};

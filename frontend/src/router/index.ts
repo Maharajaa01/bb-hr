@@ -28,6 +28,7 @@ const routes: RouteRecordRaw[] = [
 			{ path: "exceptions", name: "exceptions", component: () => import("@/views/Exceptions.vue"), meta: { access: "team", title: "Exceptions" } },
 			{ path: "directory", name: "directory", component: () => import("@/views/Directory.vue"), meta: { access: "team", title: "Directory" } },
 			{ path: "hr", name: "hr", component: () => import("@/views/HrDashboard.vue"), meta: { access: "hr", title: "HR dashboard" } },
+			{ path: "hr/shifts", name: "hr-shifts", component: () => import("@/views/ShiftPlanner.vue"), meta: { access: "hr", title: "Shift planner" } },
 			{ path: "hr/salary/:employee", name: "hr-salary", component: () => import("@/views/SalarySlips.vue"), props: true, meta: { access: "hr", title: "Salary slips" } },
 			{ path: "profile", name: "profile", component: () => import("@/views/Profile.vue"), meta: { title: "Profile" } },
 			{ path: "no-employee", name: "no-employee", component: () => import("@/views/NoEmployee.vue"), meta: { title: "Account not linked" } },

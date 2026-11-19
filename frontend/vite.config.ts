@@ -16,6 +16,8 @@ export default defineConfig({
 		emptyOutDir: true,
 		target: "es2019",
 		sourcemap: false,
+		// keep SVG illustrations as separate hashed files, never inlined into the JS as data URIs
+		assetsInlineLimit: (file: string) => (file.endsWith(".svg") ? false : undefined),
 		rollupOptions: {
 			output: {
 				entryFileNames: "assets/[name].[hash].js",

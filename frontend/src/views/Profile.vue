@@ -28,7 +28,9 @@ const active = computed(() => session.employee?.status === "Active")
 			</template>
 		</AppBar>
 
-		<section class="relative overflow-hidden rounded-xl border border-ink-200 bg-white p-4">
+		<div class="lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:items-start lg:gap-8">
+		<div>
+		<section class="relative overflow-hidden rounded-xl border border-ink-200 bg-white p-4 lg:p-6">
 			<span class="absolute -left-8 -top-8 h-24 w-24 rounded-[28px] bg-brand-100" aria-hidden="true" />
 			<span class="absolute -bottom-10 -right-10 h-24 w-24 rounded-full bg-warning/80" aria-hidden="true" />
 			<div class="relative flex items-center gap-4">
@@ -46,16 +48,32 @@ const active = computed(() => session.employee?.status === "Active")
 			</dl>
 		</section>
 
-		<nav class="mt-3" aria-label="Pages">
-			<RouterLink v-for="i in menu" :key="i.to" :to="i.to" class="flex h-12 items-center gap-4 border-b border-ink-100 px-1 text-[15px] hover:bg-ink-50">
+		<section class="mt-4 hidden space-y-2.5 lg:block">
+			<div v-if="!online" class="flex items-center gap-3 rounded-xl bg-danger-soft p-3 text-[14px] text-danger"><WifiOff class="h-5 w-5" />Offline - live data and check-in are unavailable</div>
+			<div class="card flex items-center gap-3 p-3">
+				<Smartphone class="h-5 w-5 text-ink-500" />
+				<p class="flex-1 text-[14px]">
+					<template v-if="standalone">Installed as an app</template>
+					<template v-else-if="canInstall">Install BB HRMS as an app</template>
+					<template v-else>Browser menu → "Install app"</template>
+				</p>
+				<AppButton v-if="canInstall && !standalone" size="sm" @click="promptInstall"><Download class="h-4 w-4" />Install</AppButton>
+			</div>
+		</section>
+		</div>
+
+		<nav class="mt-3 lg:card lg:mt-0 lg:overflow-hidden lg:px-2" aria-label="Pages">
+			<RouterLink v-for="i in menu" :key="i.to" :to="i.to" class="flex h-12 items-center gap-4 border-b border-ink-100 px-1 text-[15px] hover:bg-ink-50 lg:last:border-b-0">
 				<component :is="i.icon" class="h-5 w-5 text-ink-600" :stroke-width="1.5" /><span class="flex-1">{{ i.label }}</span><ChevronRight class="h-5 w-5 text-ink-400" />
 			</RouterLink>
-			<a v-if="session.info?.desk_access" href="/app" class="flex h-12 items-center gap-4 border-b border-ink-100 px-1 text-[15px] hover:bg-ink-50">
+			<a v-if="session.info?.desk_access" href="/app" class="flex h-12 items-center gap-4 border-b border-ink-100 px-1 text-[15px] hover:bg-ink-50 lg:last:border-b-0">
 				<ExternalLink class="h-5 w-5 text-ink-600" :stroke-width="1.5" /><span class="flex-1">Open HR Desk</span><ChevronRight class="h-5 w-5 text-ink-400" />
 			</a>
 		</nav>
 
-		<section class="mt-4 space-y-2.5">
+		</div>
+
+		<section class="mt-4 space-y-2.5 lg:hidden">
 			<div v-if="!online" class="flex items-center gap-3 rounded-xl bg-danger-soft p-3 text-[14px] text-danger"><WifiOff class="h-5 w-5" />Offline - live data and check-in are unavailable</div>
 			<div class="card flex items-center gap-3 p-3">
 				<Smartphone class="h-5 w-5 text-ink-500" />

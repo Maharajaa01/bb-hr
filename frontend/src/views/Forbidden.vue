@@ -9,7 +9,7 @@ import EmptyState from "@/components/ui/EmptyState.vue"
 <template>
 	<div>
 		<AppBar title="Not allowed" />
-		<div class="card">
+		<div class="card lg:mx-auto lg:max-w-xl">
 			<EmptyState :icon="Lock" title="You don't have access to this page" description="It's for reporting managers or HR. If you think you should see it, ask HR to check your role.">
 				<AppButton to="/" variant="secondary">Go home</AppButton>
 			</EmptyState>

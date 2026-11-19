@@ -23,7 +23,8 @@ const pdf = computed(() => fileUrl("salary.download_salary_slip", { name: slipNa
 
 		<ErrorState v-if="error" :error="error" :retrying="loading" @retry="reload" />
 		<Skeleton v-else-if="!data" card :lines="10" />
-		<div v-else class="space-y-3">
+		<div v-else class="space-y-3 lg:grid lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:items-start lg:gap-6 lg:space-y-0">
+			<div class="space-y-3 lg:sticky lg:top-[80px]">
 			<section class="relative overflow-hidden rounded-xl border border-ink-200 bg-gradient-to-br from-white to-brand-50 p-4">
 				<span class="absolute -right-8 -top-8 h-24 w-24 rounded-full bg-brand-100" aria-hidden="true" />
 				<p class="relative text-[13px] text-ink-500">Net Pay</p>
@@ -37,8 +38,11 @@ const pdf = computed(() => fileUrl("salary.download_salary_slip", { name: slipNa
 					<div v-if="data.bank_name || data.bank_account_no" class="col-span-3"><dt class="text-ink-500">Bank</dt><dd class="font-medium">{{ [data.bank_name, data.bank_account_no].filter(Boolean).join(" · ") }}</dd></div>
 				</dl>
 			</section>
+			<AppButton :href="pdf" block class="hidden lg:inline-flex"><Download class="h-5 w-5" /> Download PDF</AppButton>
+			</div>
 
-			<section v-for="block in [{ title: 'Earnings', lines: data.earnings, total: data.gross_pay, totalLabel: 'Gross Pay' }, { title: 'Deductions', lines: data.deductions, total: data.total_deduction, totalLabel: 'Total Deductions' }]" :key="block.title" class="-mx-3">
+			<div class="space-y-3 lg:space-y-4">
+			<section v-for="block in [{ title: 'Earnings', lines: data.earnings, total: data.gross_pay, totalLabel: 'Gross Pay' }, { title: 'Deductions', lines: data.deductions, total: data.total_deduction, totalLabel: 'Total Deductions' }]" :key="block.title" class="-mx-3 lg:card lg:mx-0 lg:overflow-hidden">
 				<table class="w-full text-[14px]">
 					<thead><tr class="bg-ink-100 text-left text-ink-700"><th class="px-3 py-2.5 font-medium">{{ block.title }}</th><th class="px-3 py-2.5 text-right font-medium">Amount</th></tr></thead>
 					<tbody class="tabular">
@@ -49,7 +53,8 @@ const pdf = computed(() => fileUrl("salary.download_salary_slip", { name: slipNa
 				</table>
 			</section>
 
-			<AppButton :href="pdf" block><Download class="h-5 w-5" /> Download PDF</AppButton>
+			</div>
+			<AppButton :href="pdf" block class="lg:hidden"><Download class="h-5 w-5" /> Download PDF</AppButton>
 		</div>
 	</div>
 </template>

@@ -1,6 +1,7 @@
 import {
 	AlertTriangle,
 	BarChart3,
+	CalendarClock,
 	CalendarDays,
 	CalendarRange,
 	Fingerprint,
@@ -33,5 +34,6 @@ export const NAV: NavItem[] = [
 	{ to: "/team", label: "Team Attendance", icon: Users, spot: "team", access: "team" },
 	{ to: "/exceptions", label: "Exceptions", icon: AlertTriangle, spot: "alert", access: "team" },
 	{ to: "/hr", label: "HR Dashboard", icon: BarChart3, spot: "chart", access: "hr" },
+	{ to: "/hr/shifts", label: "Shift Planner", icon: CalendarClock, spot: "attendance", access: "hr" },
 	{ to: "/profile", label: "My Profile", icon: UserCircle, spot: "profile" },
 ]

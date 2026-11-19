@@ -9,13 +9,40 @@
   "orientation": "portrait",
   "background_color": "#FFFFFF",
   "theme_color": "#048EFF",
-  "categories": ["business", "productivity"],
+  "categories": [
+    "business",
+    "productivity"
+  ],
   "icons": [
-    { "src": "/assets/bb_academy_hrms/bbhr/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
-    { "src": "/assets/bb_academy_hrms/bbhr/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
-    { "src": "/assets/bb_academy_hrms/bbhr/icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+    {
+      "src": "/assets/bb_academy_hrms/bbhr/icons/icon-192.png?v=4bfc717266",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/assets/bb_academy_hrms/bbhr/icons/icon-512.png?v=549b95ecd7",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/assets/bb_academy_hrms/bbhr/icons/maskable-512.png?v=f2b6ab63ae",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
   ],
   "shortcuts": [
-    { "name": "Check in", "url": "/bbhr/check-in", "icons": [{ "src": "/assets/bb_academy_hrms/bbhr/icons/icon-192.png", "sizes": "192x192" }] }
+    {
+      "name": "Check in",
+      "url": "/bbhr/check-in",
+      "icons": [
+        {
+          "src": "/assets/bb_academy_hrms/bbhr/icons/icon-192.png?v=4bfc717266",
+          "sizes": "192x192"
+        }
+      ]
+    }
   ]
 }

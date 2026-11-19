@@ -34,19 +34,21 @@ watch(page, () => reload())
 <template>
 	<div>
 		<AppBar title="Directory" :subtitle="data ? `${data.total} ${session.isHr ? 'active employees' : 'in your team'}` : undefined" />
-		<label class="relative mb-2 block"><span class="sr-only">Search</span>
+		<div class="lg:mb-4 lg:grid lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)] lg:gap-3">
+		<label class="relative mb-2 block lg:mb-0"><span class="sr-only">Search</span>
 			<Search class="pointer-events-none absolute left-3.5 top-1/2 h-5 w-5 -translate-y-1/2 text-ink-400" />
 			<input v-model="search" type="search" class="field rounded-full pl-11" placeholder="Search name, ID or designation" />
 		</label>
-		<label v-if="departments.data.value?.length" class="mb-3 block"><span class="sr-only">Department</span>
+		<label v-if="departments.data.value?.length" class="mb-3 block lg:mb-0"><span class="sr-only">Department</span>
 			<select v-model="department" class="field"><option value="">All departments</option><option v-for="d in departments.data.value" :key="d" :value="d">{{ d }}</option></select>
 		</label>
+		</div>
 
 		<ErrorState v-if="error" :error="error" :retrying="loading" @retry="reload" />
 		<Skeleton v-else-if="!data" card :lines="8" />
 		<template v-else>
-			<div class="divide-y divide-ink-200 border-y border-ink-200" :class="loading ? 'opacity-60' : ''">
-				<div v-for="e in data.rows" :key="e.name" class="flex items-center gap-3 py-3">
+			<div class="divide-y divide-ink-200 border-y border-ink-200 lg:grid lg:grid-cols-2 lg:gap-3 lg:divide-y-0 lg:border-0 xl:grid-cols-3" :class="loading ? 'opacity-60' : ''">
+				<div v-for="e in data.rows" :key="e.name" class="flex items-center gap-3 py-3 lg:card lg:px-3.5 lg:transition lg:hover:border-brand-300">
 					<Avatar :name="e.employee_name" :image="e.image" />
 					<div class="min-w-0 flex-1">
 						<RouterLink :to="`/team/${e.name}`" class="block">

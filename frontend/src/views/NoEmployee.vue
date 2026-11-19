@@ -12,7 +12,7 @@ const session = useSession()
 <template>
 	<div>
 		<AppBar title="Account" />
-		<div class="card">
+		<div class="card lg:mx-auto lg:max-w-xl">
 			<EmptyState
 				:icon="UserX"
 				title="Your login isn't linked to an employee"

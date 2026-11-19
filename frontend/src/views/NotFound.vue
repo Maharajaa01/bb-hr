@@ -9,7 +9,7 @@ import EmptyState from "@/components/ui/EmptyState.vue"
 <template>
 	<div>
 		<AppBar title="Not found" />
-		<div class="card">
+		<div class="card lg:mx-auto lg:max-w-xl">
 			<EmptyState :icon="Compass" title="Page not found" description="The link may be old or mistyped.">
 				<AppButton to="/" variant="secondary">Go home</AppButton>
 			</EmptyState>

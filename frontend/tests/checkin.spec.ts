@@ -1,6 +1,7 @@
 import { flushPromises, mount } from "@vue/test-utils"
 import { createPinia } from "pinia"
 import { beforeEach, describe, expect, it, vi } from "vitest"
+import type { Component } from "vue"
 import { createMemoryHistory, createRouter } from "vue-router"
 
 import CheckIn from "@/views/CheckIn.vue"
@@ -51,10 +52,12 @@ function setPosition(lat: number, lon: number, accuracy: number) {
 	})
 }
 
-async function mountView() {
+let status: typeof STATUS & { rules: { face?: { enabled: boolean; liveness: boolean; enrolled: boolean } } } = STATUS
+
+async function mountView(stubs: Record<string, Component> = {}) {
 	const router = createRouter({ history: createMemoryHistory(), routes: [{ path: "/", component: { template: "<div/>" } }, { path: "/check-in", component: CheckIn }] })
 	await router.push("/check-in")
-	const wrapper = mount(CheckIn, { global: { plugins: [createPinia(), router], directives: { motion: {} } } })
+	const wrapper = mount(CheckIn, { global: { plugins: [createPinia(), router], directives: { motion: {} }, stubs } })
 	await flushPromises()
 	await new Promise((r) => setTimeout(r, 5))
 	await flushPromises()
@@ -66,12 +69,13 @@ function confirmButton(wrapper: Awaited<ReturnType<typeof mountView>>) {
 }
 
 beforeEach(() => {
+	status = STATUS
 	punchBodies.length = 0
 	Object.defineProperty(window, "isSecureContext", { configurable: true, value: true })
 	Object.defineProperty(navigator, "onLine", { configurable: true, value: true })
 	setPosition(11.0168 + 20 / 111320, 76.9558, 12) // ~20 m from the office
 	vi.stubGlobal("fetch", vi.fn(async (url: string, init: RequestInit) => {
-		if (url.includes("attendance.get_status")) return json({ message: STATUS })
+		if (url.includes("attendance.get_status")) return json({ message: status })
 		if (url.includes("attendance.punch")) {
 			punchBodies.push(JSON.parse(String(init.body)))
 			return punchHandler(url, init)
@@ -143,5 +147,56 @@ describe("CheckIn", () => {
 		expect(confirmButton(w).attributes("disabled")).toBeDefined()
 		expect(w.text()).toContain("You're offline")
 		expect(punchBodies).toHaveLength(0)
+	})
+
+	describe("with face verification", () => {
+		const SCAN = { token: "tok_123456789", front: ["data:image/jpeg;base64,AAA"], turn: ["data:image/jpeg;base64,BBB"], preview: "data:image/jpeg;base64,AAA" }
+		const reset = vi.fn()
+		/** Stands in for the camera: "scanning" just emits a finished scan. */
+		const FaceScanStub = {
+			props: ["modelValue", "enrolled"],
+			emits: ["update:modelValue"],
+			setup(_p: unknown, { expose }: { expose: (e: Record<string, unknown>) => void }) {
+				expose({ reset })
+			},
+			template: `<button data-test="scan" @click="$emit('update:modelValue', ${JSON.stringify(SCAN).replace(/"/g, "'")})">{{ enrolled ? 'enrolled' : 'first time' }}</button>`,
+		}
+
+		beforeEach(() => {
+			reset.mockClear()
+			status = { ...STATUS, rules: { ...STATUS.rules, require_photo: true, face: { enabled: true, liveness: true, enrolled: false } } }
+		})
+
+		it("asks for a face scan, not a selfie, before confirming", async () => {
+			const w = await mountView({ FaceScan: FaceScanStub })
+			expect(w.text()).toContain("Set up face check-in to continue.")
+			expect(w.text()).not.toContain("Selfie required")
+			expect(w.find("[data-test=scan]").text()).toBe("first time")
+			expect(confirmButton(w).attributes("disabled")).toBeDefined()
+		})
+
+		it("sends the scan with the punch and reports a first-time enrolment", async () => {
+			punchHandler = () => json({ message: { ok: true, replayed: false, checkin: "EMP-CKIN-1", log_type: "IN", time: "2026-10-16 09:00:05", location: "Main Campus", distance: 20, attendance: null, warning: null, face_status: "Enrolled", message: "Checked in at 09:00 AM" } })
+			const w = await mountView({ FaceScan: FaceScanStub })
+			await w.find("[data-test=scan]").trigger("click")
+			expect(confirmButton(w).attributes("disabled")).toBeUndefined()
+			await confirmButton(w).trigger("click")
+			await flushPromises()
+			expect(punchBodies[0]).toMatchObject({ face: { token: SCAN.token, front: SCAN.front, turn: SCAN.turn } })
+			expect(punchBodies[0].photo).toBeUndefined()
+			expect(punchBodies[0].face).not.toHaveProperty("preview")
+			expect(w.text()).toContain("Face check-in is set up")
+		})
+
+		it("a face rejection discards the spent scan", async () => {
+			punchHandler = () =>
+				json({ exc_type: "ValidationError", _server_messages: JSON.stringify([JSON.stringify({ title: "Face Not Verified", message: "Your face does not match." })]) }, 417)
+			const w = await mountView({ FaceScan: FaceScanStub })
+			await w.find("[data-test=scan]").trigger("click")
+			await confirmButton(w).trigger("click")
+			await flushPromises()
+			expect(w.text()).toContain("Face Not Verified")
+			expect(reset).toHaveBeenCalled()
+		})
 	})
 })

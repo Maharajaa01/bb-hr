@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { CalendarCheck, CalendarX, Camera, Clock4, ListFilter, Plane } from "lucide-vue-next"
+import { useMediaQuery } from "@vueuse/core"
 import { computed, ref, watch } from "vue"
 import { useRoute, useRouter } from "vue-router"
 
@@ -33,6 +34,8 @@ const status = ref<string>(typeof q.status === "string" ? q.status : "")
 const view = ref<"calendar" | "list">("calendar")
 const showFilter = ref(false)
 const selected = ref<string | null>(null)
+// desktop has room for the month's punches next to the calendar
+const isDesktop = useMediaQuery("(min-width: 1024px)")
 
 const range = computed(() => {
 	const [y, m] = month.value.split("-").map(Number)
@@ -85,27 +88,31 @@ function photoUrl(checkin: string) {
 		<template v-else-if="!data"><div class="flex gap-2.5"><Skeleton v-for="i in 2" :key="i" card :lines="2" class="flex-1" /></div><Skeleton card :lines="7" class="mt-3" /></template>
 
 		<template v-else>
-			<div class="no-scrollbar -mx-3 flex gap-2.5 overflow-x-auto px-3 pb-1" :class="loading ? 'opacity-60' : ''">
+			<div class="no-scrollbar -mx-3 flex gap-2.5 overflow-x-auto px-3 pb-1 lg:mx-0 lg:grid lg:grid-cols-4 lg:overflow-visible lg:px-0" :class="loading ? 'opacity-60' : ''">
 				<StatCard label="Present Days" :value="data.summary.present" tone="mint" :icon="CalendarCheck" />
 				<StatCard label="Working Hours" :value="`${Math.round(data.summary.total_hours)}h`" tone="blue" :icon="Clock4" />
 				<StatCard label="Absent" :value="data.summary.absent" tone="lavender" :icon="CalendarX" />
 				<StatCard label="On Leave" :value="data.summary.on_leave" tone="peach" :icon="Plane" />
 			</div>
 
-			<div class="-mx-3 mt-3 flex items-center justify-between bg-ink-100 px-3 py-1.5">
+			<div class="-mx-3 mt-3 flex items-center justify-between bg-ink-100 px-3 py-1.5 lg:mx-0 lg:mt-4 lg:rounded-xl">
 				<Segmented v-model="view" label="View" :options="[{ value: 'calendar', label: 'Calendar' }, { value: 'list', label: 'List' }]" />
 				<IconButton label="Filter by status" :active="showFilter || !!status" @click="showFilter = !showFilter"><ListFilter class="h-5 w-5" /></IconButton>
 			</div>
-			<div v-if="showFilter" class="no-scrollbar -mx-3 mt-2 flex gap-2 overflow-x-auto px-3">
+			<div v-if="showFilter" class="no-scrollbar -mx-3 mt-2 flex gap-2 overflow-x-auto px-3 lg:mx-0 lg:px-0">
 				<button v-for="s in ['', 'Present', 'Absent', 'Half Day', 'On Leave']" :key="s" class="h-9 shrink-0 rounded-full border px-3 text-[13px]" :class="status === s ? 'border-brand-500 bg-brand-500 text-white' : 'border-ink-200 bg-white text-ink-700'" :aria-pressed="status === s" @click="status = s">{{ s || "All" }}</button>
 			</div>
 
+			<div :class="view === 'calendar' ? 'lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:items-start lg:gap-8' : ''">
+			<div v-if="view === 'calendar'" class="lg:sticky lg:top-[120px]">
 			<h2 class="section-title mb-2 mt-4">Monthly Attendance</h2>
-			<AttendanceCalendar v-if="view === 'calendar'" v-model:month="month" v-model:selected="selected" :statuses="statuses" :loading="loading" legend />
+			<AttendanceCalendar v-model:month="month" v-model:selected="selected" :statuses="statuses" :loading="loading" legend />
+			</div>
+			<h2 v-else class="section-title mb-2 mt-4">Monthly Attendance</h2>
 
-			<section class="mt-3 space-y-2.5">
-				<p v-if="view === 'calendar' && !selected" class="text-center text-[13px] text-ink-500">Tap a day to see its punches</p>
-				<template v-if="view === 'list' || selected">
+			<section class="mt-3 space-y-2.5 lg:mt-4" :class="view === 'list' ? 'lg:grid lg:grid-cols-2 lg:gap-3 lg:space-y-0 xl:grid-cols-3' : 'lg:pt-9'">
+				<p v-if="view === 'calendar' && !selected" class="text-center text-[13px] text-ink-500">{{ isDesktop ? "Whole month below · click a day to see just that day" : "Tap a day to see its punches" }}</p>
+				<template v-if="view === 'list' || selected || isDesktop">
 					<article v-for="r in rows" :key="r.name" class="card overflow-hidden">
 						<div class="flex items-center justify-between gap-2 px-3.5 py-2.5">
 							<p class="font-medium">{{ formatDate(r.attendance_date, { weekday: true }) }}</p>
@@ -117,9 +124,10 @@ function photoUrl(checkin: string) {
 						<LogTable v-if="r.status !== 'On Leave' && r.status !== 'Absent'" :rows="logRows(r)" empty="No punches recorded" />
 						<p v-else class="border-t border-ink-200 px-3.5 py-2.5 text-[13px] text-ink-500">{{ r.leave_type || r.status }}</p>
 					</article>
-					<div v-if="!rows.length" class="card"><EmptyState :description="selected ? `Nothing recorded on ${formatDate(selected)}.` : 'No attendance recorded for this month.'" /></div>
+					<div v-if="!rows.length" class="card lg:col-span-full"><EmptyState :description="selected ? `Nothing recorded on ${formatDate(selected)}.` : 'No attendance recorded for this month.'" /></div>
 				</template>
 			</section>
+			</div>
 		</template>
 	</div>
 </template>

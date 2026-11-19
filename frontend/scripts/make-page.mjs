@@ -4,7 +4,9 @@
  * Run after `vite build`:
  *   - www/bbhr.html  : built index.html with this session's CSRF token injected (Frappe renders it as Jinja)
  *   - www/bbhr_sw.js : sw-template.js stamped with a fresh CACHE_VERSION and the list of built assets
+ *   - manifest.json and icon links get ?v=<content hash> (see "cache busting" below)
  */
+import { createHash } from "node:crypto"
 import { mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from "node:fs"
 import { dirname, join, relative, resolve } from "node:path"
 import { fileURLToPath } from "node:url"
@@ -21,8 +23,27 @@ function write(target, contents) {
 	console.log(`make-page: wrote ${relative(resolve(APP, ".."), target)}`)
 }
 
+// ----------------------------------------------------------- cache busting
+// nginx serves /assets with a one-year max-age. Vite hashes JS/CSS/illustration names, but the
+// manifest and icons keep fixed names, so every reference to them gets ?v=<content hash>:
+// the URL changes exactly when the file does and phones fetch the new one.
+const hashOf = (path) => createHash("sha1").update(readFileSync(join(OUT, path))).digest("hex").slice(0, 10)
+const bust = (url) => {
+	const clean = url.split("?")[0]
+	return clean.startsWith(BASE) ? `${clean}?v=${hashOf(clean.slice(BASE.length))}` : url
+}
+
+const manifestFile = join(OUT, "manifest.json")
+const manifest = JSON.parse(readFileSync(manifestFile, "utf-8"))
+for (const icon of manifest.icons ?? []) icon.src = bust(icon.src)
+for (const shortcut of manifest.shortcuts ?? []) for (const icon of shortcut.icons ?? []) icon.src = bust(icon.src)
+writeFileSync(manifestFile, JSON.stringify(manifest, null, 2) + "\n")
+
 // ---------------------------------------------------------------- SPA shell
-const html = readFileSync(join(OUT, "index.html"), "utf-8")
+const html = readFileSync(join(OUT, "index.html"), "utf-8").replace(
+	new RegExp(`href="(${BASE}(?:manifest\\.json|icons/[^"?]+))"`, "g"),
+	(_, url) => `href="${bust(url)}"`,
+)
 if (!html.includes("</head>")) {
 	console.error("make-page: built index.html has no </head>")
 	process.exit(1)

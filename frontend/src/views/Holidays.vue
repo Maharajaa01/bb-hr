@@ -51,7 +51,7 @@ function day(h: Holiday) {
 		<ErrorState v-if="error" :error="error" :retrying="loading" @retry="reload" />
 		<div v-else-if="!data" class="space-y-2.5"><Skeleton v-for="i in 4" :key="i" card :lines="2" /></div>
 		<div v-else-if="!data.holiday_list" class="card"><EmptyState spot="holiday" title="No holiday list assigned" description="Ask HR to set a holiday list on your employee record or the company." /></div>
-		<div v-else :class="loading ? 'opacity-60' : ''">
+		<div v-else class="lg:grid lg:grid-cols-2 lg:items-start lg:gap-x-6 xl:grid-cols-3" :class="loading ? 'opacity-60' : ''">
 			<section v-for="g in groups" :key="g.month" class="mb-4">
 				<h2 class="mb-2 text-[15px] font-medium text-ink-700">{{ g.month }}</h2>
 				<div class="space-y-2">
@@ -64,7 +64,7 @@ function day(h: Holiday) {
 					</article>
 				</div>
 			</section>
-			<div v-if="!groups.length" class="card"><EmptyState spot="holiday" :title="`No holidays in ${year}`" /></div>
+			<div v-if="!groups.length" class="card lg:col-span-full"><EmptyState spot="holiday" :title="`No holidays in ${year}`" /></div>
 		</div>
 	</div>
 </template>

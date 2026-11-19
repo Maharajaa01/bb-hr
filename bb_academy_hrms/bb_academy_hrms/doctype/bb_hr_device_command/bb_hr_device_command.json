@@ -1,0 +1,123 @@
+{
+ "actions": [],
+ "autoname": "autoincrement",
+ "creation": "2026-11-02 12:00:00.000000",
+ "description": "Commands waiting for, or already run by, a biometric device (for example: create a user on the device). The device collects pending commands about every 10 seconds.",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "device",
+  "status",
+  "employee",
+  "column_break_a",
+  "attempts",
+  "sent_at",
+  "done_at",
+  "return_code",
+  "command_section",
+  "command"
+ ],
+ "fields": [
+  {
+   "fieldname": "device",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Device",
+   "options": "BB HR Biometric Device",
+   "read_only": 1,
+   "reqd": 1,
+   "search_index": 1
+  },
+  {
+   "default": "Pending",
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Status",
+   "options": "Pending\nSent\nDone\nFailed",
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "employee",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Employee",
+   "options": "Employee",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_a",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "attempts",
+   "fieldtype": "Int",
+   "label": "Attempts",
+   "read_only": 1
+  },
+  {
+   "fieldname": "sent_at",
+   "fieldtype": "Datetime",
+   "label": "Sent At",
+   "read_only": 1
+  },
+  {
+   "fieldname": "done_at",
+   "fieldtype": "Datetime",
+   "label": "Done At",
+   "read_only": 1
+  },
+  {
+   "description": "Reported by the device: 0 is success, anything else is an error code.",
+   "fieldname": "return_code",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Return Code",
+   "read_only": 1
+  },
+  {
+   "fieldname": "command_section",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "command",
+   "fieldtype": "Small Text",
+   "label": "Command",
+   "read_only": 1,
+   "reqd": 1
+  }
+ ],
+ "in_create": 1,
+ "index_web_pages_for_search": 0,
+ "links": [],
+ "modified": "2026-11-02 12:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "BB_Academy_HRMS",
+ "name": "BB HR Device Command",
+ "naming_rule": "Autoincrement",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "delete": 1,
+   "export": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager"
+  },
+  {
+   "delete": 1,
+   "export": 1,
+   "read": 1,
+   "report": 1,
+   "role": "HR Manager"
+  }
+ ],
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": []
+}

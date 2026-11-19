@@ -21,15 +21,15 @@ function goBack() {
 </script>
 
 <template>
-	<header class="sticky top-0 z-20 -mx-3 mb-3 bg-brand-500 text-white safe-top">
+	<header class="sticky top-0 z-20 -mx-3 mb-3 bg-brand-500 text-white safe-top lg:mx-0 lg:mb-5 lg:rounded-b-2xl lg:px-2 lg:shadow-card">
 		<div class="flex h-14 items-center gap-1 px-1">
 			<button v-if="hasBack" class="grid h-11 w-11 shrink-0 place-items-center rounded-full hover:bg-white/15" aria-label="Back" @click="goBack">
 				<ArrowLeft class="h-6 w-6" />
 			</button>
-			<button v-else class="grid h-11 w-11 shrink-0 place-items-center rounded-full hover:bg-white/15" aria-label="Open menu" aria-haspopup="dialog" @click="ui.drawerOpen = true">
+			<button v-else class="grid h-11 w-11 shrink-0 place-items-center rounded-full hover:bg-white/15 lg:hidden" aria-label="Open menu" aria-haspopup="dialog" @click="ui.drawerOpen = true">
 				<Menu class="h-6 w-6" />
 			</button>
-			<div class="min-w-0 flex-1 pl-1">
+			<div class="min-w-0 flex-1 pl-1" :class="hasBack ? '' : 'lg:pl-3'">
 				<h1 class="truncate text-[19px] font-medium leading-tight">{{ title }}</h1>
 				<p v-if="subtitle" class="truncate text-[12px] leading-tight text-white/85">{{ subtitle }}</p>
 			</div>

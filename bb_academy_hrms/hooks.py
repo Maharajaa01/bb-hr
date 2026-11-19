@@ -258,3 +258,6 @@ website_route_rules = [
 ]
 
 after_request = ["bb_academy_hrms.utils.http.after_request"]
+
+# ZKTeco biometric terminals push punches to /iclock/* (ADMS protocol)
+page_renderer = ["bb_academy_hrms.integrations.zkteco_push.ZKPushRenderer"]

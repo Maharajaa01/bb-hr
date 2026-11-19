@@ -1,0 +1,188 @@
+{
+ "actions": [],
+ "autoname": "field:serial_number",
+ "creation": "2026-11-02 09:00:00.000000",
+ "description": "A ZKTeco attendance terminal that pushes punches to this site (Comm > Cloud Server Setting / ADMS). A device appears here, disabled, the first time it contacts the server.",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "serial_number",
+  "device_name",
+  "enabled",
+  "column_break_a",
+  "office_location",
+  "punch_direction",
+  "import_from",
+  "allowed_ip",
+  "status_section",
+  "last_seen",
+  "last_ip",
+  "firmware",
+  "column_break_b",
+  "last_punch",
+  "punches_received",
+  "last_stamp",
+  "problems_section",
+  "unmatched_user_ids",
+  "last_error"
+ ],
+ "fields": [
+  {
+   "description": "Printed on the device label and shown under System Info > Device Info.",
+   "fieldname": "serial_number",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Serial Number",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "device_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Device Name"
+  },
+  {
+   "default": "0",
+   "description": "Punches are accepted only from enabled devices. A disabled device keeps its punches and uploads them once enabled.",
+   "fieldname": "enabled",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Enabled"
+  },
+  {
+   "fieldname": "column_break_a",
+   "fieldtype": "Column Break"
+  },
+  {
+   "description": "Shown as the check-in location for punches from this device.",
+   "fieldname": "office_location",
+   "fieldtype": "Data",
+   "label": "Office Location"
+  },
+  {
+   "default": "Alternate IN / OUT",
+   "description": "Alternate: each day's first punch is IN, the next OUT, and so on. Device punch key: use the Check-In / Check-Out key the employee pressed (falls back to alternating when no key was pressed).",
+   "fieldname": "punch_direction",
+   "fieldtype": "Select",
+   "label": "Punch Direction",
+   "options": "Alternate IN / OUT\nDevice punch key"
+  },
+  {
+   "description": "Punches older than this are ignored (keeps old test punches stored on the device out of HR).",
+   "fieldname": "import_from",
+   "fieldtype": "Datetime",
+   "label": "Import Punches From"
+  },
+  {
+   "description": "Optional. When set, only requests from this public IP are accepted. Leave empty if the office internet has a changing IP.",
+   "fieldname": "allowed_ip",
+   "fieldtype": "Data",
+   "label": "Allowed IP"
+  },
+  {
+   "fieldname": "status_section",
+   "fieldtype": "Section Break",
+   "label": "Status"
+  },
+  {
+   "fieldname": "last_seen",
+   "fieldtype": "Datetime",
+   "in_list_view": 1,
+   "label": "Last Seen",
+   "read_only": 1
+  },
+  {
+   "fieldname": "last_ip",
+   "fieldtype": "Data",
+   "label": "Last IP",
+   "read_only": 1
+  },
+  {
+   "fieldname": "firmware",
+   "fieldtype": "Data",
+   "label": "Push Protocol Version",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_b",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "last_punch",
+   "fieldtype": "Datetime",
+   "label": "Last Punch Imported",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "punches_received",
+   "fieldtype": "Int",
+   "label": "Punches Imported",
+   "read_only": 1
+  },
+  {
+   "description": "Upload position reported by the device. Clear it to make the device upload all stored punches again (already imported ones are skipped).",
+   "fieldname": "last_stamp",
+   "fieldtype": "Data",
+   "label": "Last Stamp"
+  },
+  {
+   "fieldname": "problems_section",
+   "fieldtype": "Section Break",
+   "label": "Problems"
+  },
+  {
+   "description": "Device user IDs that punched but match no active Employee. Put the ID in the employee's Attendance Device ID field; their next punches will import.",
+   "fieldname": "unmatched_user_ids",
+   "fieldtype": "Small Text",
+   "label": "Unmatched User IDs",
+   "read_only": 1
+  },
+  {
+   "fieldname": "last_error",
+   "fieldtype": "Small Text",
+   "label": "Last Error",
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 0,
+ "links": [],
+ "modified": "2026-11-02 09:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "BB_Academy_HRMS",
+ "name": "BB HR Biometric Device",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "HR Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "device_name",
+ "track_changes": 1
+}

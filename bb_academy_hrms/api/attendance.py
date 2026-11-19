@@ -10,6 +10,10 @@ Duplicate protection, in order:
   2. `request_id` (unique column) makes a retried request return the original punch,
   3. the IN/OUT sequence must alternate within the day,
   4. punches closer together than `min_gap_seconds` are refused.
+
+With face verification on, the punch also carries a face scan (see api/face.py): the
+first one enrols the employee's face, later ones must match it. The scan's first frame
+doubles as the punch selfie.
 """
 
 import base64
@@ -260,6 +264,7 @@ def get_status():
 		["name", "status", "working_hours", "in_time", "out_time", "leave_type"],
 		as_dict=True,
 	)
+	from bb_academy_hrms.api.face import status_for as face_status_for
 	from bb_academy_hrms.api.holidays import holiday_on
 
 	return {
@@ -283,6 +288,7 @@ def get_status():
 			"max_accuracy": settings.max_accuracy,
 			"accuracy_tolerance": settings.accuracy_tolerance,
 			"min_gap_seconds": settings.min_gap_seconds,
+			"face": face_status_for(emp.name, settings),
 			"locations": [
 				{
 					"name": l.location_name,
@@ -297,7 +303,16 @@ def get_status():
 
 
 @frappe.whitelist(methods=["POST"])
-def punch(log_type, latitude=None, longitude=None, accuracy=None, photo=None, request_id=None, device=None):
+def punch(
+	log_type,
+	latitude=None,
+	longitude=None,
+	accuracy=None,
+	photo=None,
+	request_id=None,
+	device=None,
+	face=None,
+):
 	"""Record one check-in (IN) or check-out (OUT) for the logged-in employee."""
 	log_type = (log_type or "").upper()
 	if log_type not in ("IN", "OUT"):
@@ -315,7 +330,16 @@ def punch(log_type, latitude=None, longitude=None, accuracy=None, photo=None, re
 		previous = frappe.db.get_value(
 			"Employee Checkin",
 			{"bbhr_request_id": request_id},
-			["name", "employee", "log_type", "time", "bbhr_office_location", "bbhr_distance", "attendance"],
+			[
+				"name",
+				"employee",
+				"log_type",
+				"time",
+				"bbhr_office_location",
+				"bbhr_distance",
+				"attendance",
+				"bbhr_face_status",
+			],
 			as_dict=True,
 		)
 		if previous:
@@ -350,7 +374,15 @@ def punch(log_type, latitude=None, longitude=None, accuracy=None, photo=None, re
 		)
 
 	location_name, distance = _check_location(settings, latitude, longitude, accuracy)
-	content, ext = _decode_photo(photo) if (settings.require_photo or photo) else (None, None)
+	# face last: the scan's challenge is single-use, so don't spend it on a punch refused for other reasons
+	face_result = None
+	if settings.face_verification:
+		from bb_academy_hrms.api.face import verify_scan
+
+		face_result = verify_scan(emp, face, settings)
+		content, ext = face_result["photo"]
+	else:
+		content, ext = _decode_photo(photo) if (settings.require_photo or photo) else (None, None)
 
 	doc = frappe.new_doc("Employee Checkin")
 	doc.employee = emp.name
@@ -364,6 +396,9 @@ def punch(log_type, latitude=None, longitude=None, accuracy=None, photo=None, re
 	if is_valid_coordinate(latitude, longitude):
 		doc.latitude = flt(latitude)
 		doc.longitude = flt(longitude)
+	if face_result:
+		doc.bbhr_face_status = face_result["status"]
+		doc.bbhr_face_score = face_result["score"]
 	doc.flags.ignore_permissions = True
 	doc.insert()
 
@@ -403,6 +438,7 @@ def _result(doc, attendance, warning, replayed=False):
 		"distance": doc.get("bbhr_distance"),
 		"attendance": attendance,
 		"warning": warning,
+		"face_status": doc.get("bbhr_face_status") or None,
 		"message": _("{0} at {1}").format(verb, t.strftime("%I:%M %p")),
 	}
 

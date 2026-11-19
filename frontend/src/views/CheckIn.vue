@@ -18,7 +18,8 @@ import {
 import { computed, nextTick, onMounted, ref } from "vue"
 
 import { ApiError, call } from "@/api/client"
-import type { AttendanceStatus, PunchResult } from "@/api/types"
+import type { AttendanceStatus, FaceScanResult, PunchResult } from "@/api/types"
+import FaceScan from "@/components/FaceScan.vue"
 import AppBar from "@/components/ui/AppBar.vue"
 import HeaderTabs from "@/components/ui/HeaderTabs.vue"
 import AppButton from "@/components/ui/AppButton.vue"
@@ -45,6 +46,8 @@ const geo = useGeolocation({ maxWaitMs: 15000, goodEnough: 25 })
 const video = ref<HTMLVideoElement | null>(null)
 const camera = useCamera(video)
 const photo = ref<string | null>(null)
+const faceScan = ref<FaceScanResult | null>(null)
+const faceScanner = ref<InstanceType<typeof FaceScan> | null>(null)
 
 const submitting = ref(false)
 const result = ref<PunchResult | null>(null)
@@ -78,13 +81,17 @@ const locationState = computed<"pending" | "ok" | "outside" | "weak" | "unconfig
 	return withinGeofence(nearest.value.distance, nearest.value.radius, fix.accuracy, r.accuracy_tolerance) ? "ok" : "outside"
 })
 
-const photoRequired = computed(() => !!rules.value?.require_photo)
+const face = computed(() => rules.value?.face)
+const faceRequired = computed(() => !!face.value?.enabled)
+/** A face scan replaces the selfie: its first frame is stored as the punch photo. */
+const photoRequired = computed(() => !!rules.value?.require_photo && !faceRequired.value)
 const ready = computed(
 	() =>
 		online.value &&
 		!submitting.value &&
 		(locationState.value === "ok" || locationState.value === "unrestricted") &&
-		(!photoRequired.value || !!photo.value),
+		(!photoRequired.value || !!photo.value) &&
+		(!faceRequired.value || !!faceScan.value),
 )
 
 const blocker = computed(() => {
@@ -102,6 +109,7 @@ const blocker = computed(() => {
 			return `You're ${formatDistance(nearest.value!.distance)} from ${nearest.value!.location.name}. Move within ${nearest.value!.radius} m to continue.`
 	}
 	if (photoRequired.value && !photo.value) return "Take a selfie to continue."
+	if (faceRequired.value && !faceScan.value) return face.value?.enrolled ? "Scan your face to continue." : "Set up face check-in to continue."
 	return ""
 })
 
@@ -143,7 +151,8 @@ async function submit() {
 				latitude: fix?.latitude,
 				longitude: fix?.longitude,
 				accuracy: fix?.accuracy,
-				photo: photo.value,
+				photo: faceRequired.value ? undefined : photo.value,
+				face: faceScan.value ? { token: faceScan.value.token, front: faceScan.value.front, turn: faceScan.value.turn } : undefined,
 				request_id: requestId,
 				device: deviceLabel(),
 			},
@@ -154,6 +163,7 @@ async function submit() {
 			result.value = res
 			requestId = null
 			photo.value = null
+			faceScanner.value?.reset()
 			void reload()
 		} else {
 			uncertain.value = true
@@ -166,6 +176,8 @@ async function submit() {
 		} else {
 			rejection.value = err
 			requestId = null
+			// the server spends the scan's one-time challenge, so a new attempt needs a new scan
+			faceScanner.value?.reset()
 		}
 	} finally {
 		submitting.value = false
@@ -177,6 +189,7 @@ function startOver() {
 	rejection.value = null
 	uncertain.value = false
 	photo.value = null
+	faceScanner.value?.reset()
 	void geo.locate()
 }
 
@@ -244,13 +257,15 @@ const isOut = computed(() => action.value === "OUT")
 		<div v-else-if="!status" class="space-y-3 pt-4"><Skeleton :lines="2" /><div class="mx-auto h-[140px] w-[140px] animate-pulse rounded-full bg-ink-100" /><Skeleton card :lines="4" /></div>
 
 		<!-- confirmed by the server -->
-		<section v-else-if="result" v-motion :initial="{ opacity: 0, scale: 0.96 }" :enter="{ opacity: 1, scale: 1 }" class="px-3 py-10 text-center" role="status">
+		<section v-else-if="result" v-motion :initial="{ opacity: 0, scale: 0.96 }" :enter="{ opacity: 1, scale: 1 }" class="px-3 py-10 text-center lg:card lg:mx-auto lg:max-w-lg lg:px-8" role="status">
 			<div class="mx-auto mb-4 grid h-20 w-20 place-items-center rounded-full bg-success-soft text-success"><CheckCircle2 class="h-11 w-11" /></div>
 			<p class="text-xl font-semibold">{{ result.message }}</p>
 			<p class="mt-1 text-ink-500">
 				<template v-if="result.location">at {{ result.location }}<template v-if="result.distance !== null"> · {{ formatDistance(result.distance) }} away</template></template>
 				<template v-else>Recorded</template>
 			</p>
+			<p v-if="result.face_status === 'Enrolled'" class="mt-3 text-sm text-success">Face check-in is set up. Next time just scan your face.</p>
+			<p v-else-if="result.face_status === 'Verified'" class="mt-3 text-sm text-success">Face verified</p>
 			<p class="mt-1 text-xs text-ink-400">Reference {{ result.checkin }}</p>
 			<p v-if="result.warning" class="mt-4 rounded-xl bg-warning-soft px-3 py-2 text-left text-sm text-warning-deep">{{ result.warning }}</p>
 			<div class="mt-6 grid grid-cols-2 gap-2.5">
@@ -259,7 +274,8 @@ const isOut = computed(() => action.value === "OUT")
 			</div>
 		</section>
 
-		<div v-else>
+		<div v-else class="lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:items-start lg:gap-8">
+			<div class="lg:card lg:p-6">
 			<!-- date, timer, punch button -->
 			<section class="flex flex-col items-center pt-2 text-center">
 				<p class="text-[13px] text-ink-500">{{ formatDate(status.date, { year: true }) }}</p>
@@ -322,6 +338,8 @@ const isOut = computed(() => action.value === "OUT")
 					</button>
 				</div>
 
+				<FaceScan v-if="faceRequired" ref="faceScanner" v-model="faceScan" :enrolled="!!face?.enrolled" />
+
 				<div v-if="photoRequired" class="card p-3">
 					<div v-show="camera.active.value" class="relative mb-3 overflow-hidden rounded-xl bg-ink-950">
 						<video ref="video" class="aspect-square w-full -scale-x-100 object-cover" playsinline muted autoplay />
@@ -356,15 +374,20 @@ const isOut = computed(() => action.value === "OUT")
 				</div>
 			</section>
 
+			</div>
+
+			<div class="lg:card lg:overflow-hidden">
+			<h2 class="hidden px-4 pb-1 pt-4 text-[15px] font-semibold lg:block">Today's punches</h2>
 			<!-- summary -->
-			<section class="-mx-3 mt-5 grid grid-cols-3 border-t border-ink-200 text-center">
+			<section class="-mx-3 mt-5 grid grid-cols-3 border-t border-ink-200 text-center lg:mx-0 lg:mt-2">
 				<div class="py-3"><p class="tabular font-semibold">{{ status.first_in ? formatTime(status.first_in) : "--:--" }}</p><p class="mt-0.5 inline-flex items-center gap-1 text-[13px] text-ink-500"><Circle class="h-2.5 w-2.5 fill-brand-500 text-brand-500" />From</p></div>
 				<div class="border-x border-ink-200 py-3"><p class="tabular font-semibold">{{ status.last_out ? formatTime(status.last_out) : "--:--" }}</p><p class="mt-0.5 inline-flex items-center gap-1 text-[13px] text-ink-500"><Circle class="h-2.5 w-2.5 fill-danger text-danger" />To</p></div>
 				<div class="py-3"><p class="tabular font-semibold text-brand-500">{{ clock(workedSeconds).replace(/ /g, "") }}</p><p class="mt-0.5 text-[13px] text-ink-500">Working Hrs</p></div>
 			</section>
 
 			<!-- log -->
-			<section class="-mx-3"><LogTable :rows="pairs" empty="No punches yet today" /></section>
+			<section class="-mx-3 lg:mx-0"><LogTable :rows="pairs" empty="No punches yet today" /></section>
+			</div>
 		</div>
 	</div>
 </template>

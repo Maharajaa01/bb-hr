@@ -113,8 +113,8 @@ const setupIssues = computed(() => {
 				</section>
 			</div>
 
-			<section class="grid gap-3 sm:grid-cols-3">
-				<RouterLink v-for="l in [{ to: '/team', t: 'Company attendance', d: 'Who is in, by person' }, { to: '/exceptions', t: 'Exceptions', d: 'Late, missing check-outs, unmarked' }, { to: '/directory', t: 'Directory', d: 'Employees, contacts, payslips' }]" :key="l.to" :to="l.to" class="card flex items-center gap-3 p-4 hover:border-brand-300">
+			<section class="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+				<RouterLink v-for="l in [{ to: '/hr/shifts', t: 'Shift planner', d: 'Allocate and edit shift timings' }, { to: '/team', t: 'Company attendance', d: 'Who is in, by person' }, { to: '/exceptions', t: 'Exceptions', d: 'Late, missing check-outs, unmarked' }, { to: '/directory', t: 'Directory', d: 'Employees, contacts, payslips' }]" :key="l.to" :to="l.to" class="card flex items-center gap-3 p-4 hover:border-brand-300">
 					<span class="flex-1"><span class="block font-semibold">{{ l.t }}</span><span class="text-sm text-ink-500">{{ l.d }}</span></span>
 					<ChevronRight class="h-5 w-5 text-ink-300" />
 				</RouterLink>

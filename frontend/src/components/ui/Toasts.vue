@@ -8,7 +8,7 @@ const icons = { success: CheckCircle2, error: XCircle, info: Info, warning: Aler
 </script>
 
 <template>
-	<div class="pointer-events-none fixed inset-x-0 bottom-20 z-50 mx-auto flex max-w-app flex-col items-center gap-2 p-3 safe-bottom" aria-live="polite">
+	<div class="pointer-events-none fixed inset-x-0 bottom-20 z-50 mx-auto flex max-w-app lg:bottom-6 lg:left-64 flex-col items-center gap-2 p-3 safe-bottom" aria-live="polite">
 		<TransitionGroup name="fade">
 			<div v-for="t in toasts.items" :key="t.id" class="pointer-events-auto flex w-full max-w-sm items-start gap-3 rounded-xl bg-ink-900 p-3.5 text-white shadow-lift" role="status">
 				<component

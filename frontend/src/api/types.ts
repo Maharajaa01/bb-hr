@@ -58,8 +58,27 @@ export interface AttendanceStatus {
 		max_accuracy: number
 		accuracy_tolerance: number
 		min_gap_seconds: number
+		/** Absent on servers that predate face check-in. */
+		face?: { enabled: boolean; liveness: boolean; enrolled: boolean }
 		locations: OfficeLocation[]
 	}
+}
+
+export interface FaceChallenge {
+	enabled: boolean
+	token: string
+	direction: "left" | "right"
+	liveness: boolean
+	enrolled: boolean
+	expires_in: number
+}
+
+/** What the punch sends as `face`; `preview` stays on the device. */
+export interface FaceScanResult {
+	token: string
+	front: string[]
+	turn: string[]
+	preview: string
 }
 
 export interface PunchResult {
@@ -72,6 +91,7 @@ export interface PunchResult {
 	distance: number | null
 	attendance: string | null
 	warning: string | null
+	face_status?: "Verified" | "Enrolled" | null
 	message: string
 }
 
@@ -296,4 +316,55 @@ export interface Directory {
 	page: number
 	page_length: number
 	is_hr?: boolean
+}
+
+// ---------------------------------------------------------------- shift planner
+export interface PlannerShift {
+	assignment: string
+	shift_type: string
+	/** "HH:MM", 24 h; end <= start means the shift runs past midnight */
+	start: string
+	end: string
+	from_date: string
+	to_date: string | null
+}
+
+export interface PlannerEmployee {
+	name: string
+	employee_name: string
+	designation: string | null
+	department: string | null
+	image: string | null
+	shifts: PlannerShift[]
+}
+
+export interface PlannerShiftType {
+	name: string
+	start: string
+	end: string
+	employees: string[]
+}
+
+export interface ShiftPlanner {
+	today: string
+	employees: PlannerEmployee[]
+	shift_types: PlannerShiftType[]
+	departments: string[]
+	multiple_allowed: boolean
+}
+
+export interface ShiftConflict {
+	employee: string
+	employee_name: string
+	conflicts: { assignment: string; shift_type: string; start: string; end: string; from_date: string; to_date: string | null }[]
+}
+
+export interface ShiftSaveResult {
+	ok: boolean
+	conflicts?: ShiftConflict[]
+	created?: number
+	shift_type?: string
+	enabled_multiple?: boolean
+	message?: string
+	name?: string
 }

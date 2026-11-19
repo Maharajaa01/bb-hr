@@ -13,6 +13,12 @@
   "require_photo",
   "min_gap_seconds",
   "create_attendance",
+  "face_section",
+  "enable_face_verification",
+  "face_liveness",
+  "column_break_face",
+  "face_match_threshold",
+  "face_max_failures",
   "locations_section",
   "office_locations"
  ],
@@ -78,6 +84,47 @@
    "label": "Create Attendance From Check-ins"
   },
   {
+   "fieldname": "face_section",
+   "fieldtype": "Section Break",
+   "label": "Face Verification"
+  },
+  {
+   "default": "1",
+   "fieldname": "enable_face_verification",
+   "fieldtype": "Check",
+   "label": "Enable Face Verification",
+   "description": "At an employee's first check-in their face is enrolled; every later punch must match it. Delete the employee's BB HR Face Profile to make them enrol again."
+  },
+  {
+   "default": "1",
+   "depends_on": "enable_face_verification",
+   "fieldname": "face_liveness",
+   "fieldtype": "Check",
+   "label": "Require Head-Turn Liveness Check",
+   "description": "The employee is asked to turn their head left or right (chosen at random) during the scan, so a printed photo or a still picture on a screen is refused."
+  },
+  {
+   "fieldname": "column_break_face",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0.42",
+   "depends_on": "enable_face_verification",
+   "fieldname": "face_match_threshold",
+   "fieldtype": "Float",
+   "label": "Face Match Threshold",
+   "precision": "2",
+   "description": "Cosine similarity needed to accept a face (0-1). Higher is stricter. The same person typically scores 0.6-0.9 and different people below 0.3. Do not go below 0.36."
+  },
+  {
+   "default": "5",
+   "depends_on": "enable_face_verification",
+   "fieldname": "face_max_failures",
+   "fieldtype": "Int",
+   "label": "Failed Scans Before 15-Minute Lockout",
+   "non_negative": 1
+  },
+  {
    "fieldname": "locations_section",
    "fieldtype": "Section Break",
    "label": "Office Locations"
@@ -91,7 +138,7 @@
  ],
  "issingle": 1,
  "links": [],
- "modified": "2026-10-16 19:00:00.000000",
+ "modified": "2026-10-20 10:00:00.000000",
  "modified_by": "Administrator",
  "module": "BB_Academy_HRMS",
  "name": "BB HR Settings",

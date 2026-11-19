@@ -5,3 +5,5 @@
 tags
 node_modules
 __pycache__
+# downloaded at install time (utils/face.py)
+bb_academy_hrms/face_models/

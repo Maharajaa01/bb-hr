@@ -1,11 +1,10 @@
 <script setup lang="ts">
-import { Briefcase, CalendarCheck, CalendarDays, CalendarX, MoreHorizontal, Timer } from "lucide-vue-next"
+import { Briefcase, CalendarCheck, CalendarDays, CalendarX, Fingerprint, MoreHorizontal } from "lucide-vue-next"
 import { computed, ref, watch } from "vue"
 
 import { call } from "@/api/client"
 import type { AttendanceHistory, Dashboard } from "@/api/types"
 import AttendanceCalendar from "@/components/AttendanceCalendar.vue"
-import HandPhone from "@/components/illustrations/HandPhone.vue"
 import Skyline from "@/components/illustrations/Skyline.vue"
 import AppBar from "@/components/ui/AppBar.vue"
 import Avatar from "@/components/ui/Avatar.vue"
@@ -44,9 +43,11 @@ const checkedIn = computed(() => !!data.value?.today.checked_in)
 	<div>
 		<AppBar title="Dashboard" />
 
+		<div class="lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:items-start lg:gap-8">
+		<div>
 		<!-- hero + overlapping profile card -->
-		<div class="-mx-3 -mt-3 h-[180px] overflow-hidden"><Skyline /></div>
-		<section class="relative -mt-10 overflow-hidden rounded-xl border border-ink-200 bg-gradient-to-br from-white to-lavender shadow-card">
+		<div class="-mx-3 -mt-3 h-[180px] overflow-hidden lg:mx-0 lg:mt-0 lg:h-[220px] lg:rounded-2xl"><Skyline /></div>
+		<section class="relative -mt-10 overflow-hidden rounded-xl lg:mx-4 border border-ink-200 bg-gradient-to-br from-white to-lavender shadow-card">
 			<div class="flex items-center gap-3 p-3.5">
 				<Avatar :name="session.displayName" :image="session.employee?.image" size="lg" />
 				<div class="min-w-0 flex-1">
@@ -60,8 +61,10 @@ const checkedIn = computed(() => !!data.value?.today.checked_in)
 				class="relative flex h-12 items-center justify-center gap-2 text-[15px] font-medium text-white"
 				:class="checkedIn ? 'bg-gradient-to-r from-[#E8456B] to-danger' : 'bg-gradient-to-r from-brand-400 to-brand-600'"
 			>
-				<HandPhone class="absolute -bottom-1 left-2 h-12 w-11" />
-				<Timer class="h-5 w-5" />{{ checkedIn ? "Click To Check Out" : "Click To Check In" }}
+				<span class="absolute left-2 top-1/2 grid h-9 w-9 -translate-y-1/2 place-items-center rounded-full bg-white/20 ring-1 ring-white/40">
+					<Fingerprint class="h-5 w-5" stroke-width="2.2" />
+				</span>
+				{{ checkedIn ? "Click To Check Out" : "Click To Check In" }}
 			</RouterLink>
 		</section>
 
@@ -73,7 +76,7 @@ const checkedIn = computed(() => !!data.value?.today.checked_in)
 				<h2 class="section-title">Quick Links</h2>
 				<button class="grid h-11 w-11 place-items-center rounded-full text-ink-500 hover:bg-ink-50" aria-label="All pages" @click="ui.drawerOpen = true"><MoreHorizontal class="h-5 w-5" /></button>
 			</div>
-			<div class="grid grid-cols-3 gap-2.5">
+			<div class="grid grid-cols-3 gap-2.5 xl:gap-3">
 				<QuickLinkTile v-for="t in tiles" :key="t.to" :to="t.to" :label="t.label" :spot="t.spot" />
 			</div>
 		</section>
@@ -87,15 +90,18 @@ const checkedIn = computed(() => !!data.value?.today.checked_in)
 			<!-- leave balance -->
 			<section class="mt-6">
 				<h2 class="section-title mb-3">Leave Balance</h2>
-				<div class="no-scrollbar -mx-3 flex gap-2.5 overflow-x-auto px-3 pb-1">
+				<div class="no-scrollbar -mx-3 flex gap-2.5 overflow-x-auto px-3 pb-1 lg:mx-0 lg:grid lg:grid-cols-3 lg:overflow-visible lg:px-0">
 					<StatCard label="Total" :value="data.leave_balance.total" tone="lavender" :icon="CalendarDays" />
 					<StatCard label="Used" :value="data.leave_balance.used" tone="peach" :icon="CalendarX" />
 					<StatCard label="Available" :value="data.leave_balance.available" tone="mint" :icon="CalendarCheck" />
 				</div>
 			</section>
+		</template>
+		</div>
 
+		<div v-if="data">
 			<!-- salary slips -->
-			<section class="mt-6">
+			<section class="mt-6 lg:mt-0">
 				<div class="mb-3 flex items-baseline justify-between">
 					<h2 class="section-title">Salary Slip</h2>
 					<RouterLink to="/salary" class="text-[13px] text-ink-500 hover:text-brand-500">Show More</RouterLink>
@@ -125,6 +131,7 @@ const checkedIn = computed(() => !!data.value?.today.checked_in)
 				<AttendanceCalendar v-model:month="month" v-model:selected="selectedDay" :statuses="statuses" :loading="att.loading.value" legend />
 				<p v-if="selectedDay" class="mt-2 text-center text-[13px] text-ink-500">{{ formatDate(selectedDay, { weekday: true }) }}: {{ statuses[selectedDay] || "Nothing recorded" }}</p>
 			</section>
-		</template>
+		</div>
+		</div>
 	</div>
 </template>

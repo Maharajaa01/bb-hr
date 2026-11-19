@@ -40,8 +40,8 @@ watch(page, () => reload())
 		<ErrorState v-if="error" :error="error" :retrying="loading" @retry="reload" />
 		<div v-else-if="!data" class="space-y-2.5"><Skeleton v-for="i in 3" :key="i" card :lines="3" /></div>
 		<template v-else>
-			<div class="space-y-2.5" :class="loading ? 'opacity-60' : ''">
-				<RouterLink v-for="s in data.rows" :key="s.name" :to="`/salary/${encodeURIComponent(s.name)}`" class="card block p-3.5">
+			<div class="space-y-2.5 lg:grid lg:grid-cols-2 lg:gap-3 lg:space-y-0 xl:grid-cols-3" :class="loading ? 'opacity-60' : ''">
+				<RouterLink v-for="s in data.rows" :key="s.name" :to="`/salary/${encodeURIComponent(s.name)}`" class="card block p-3.5 transition hover:border-brand-300 hover:shadow-lift">
 					<div class="flex items-center justify-between">
 						<p class="text-[15px] font-medium">{{ monthLabel(s.start_date) }}</p>
 						<span class="inline-flex items-center gap-1 text-[14px] font-medium text-success">Submitted<span class="h-2 w-2 rounded-full bg-success" /></span>
@@ -52,7 +52,7 @@ watch(page, () => reload())
 					</div>
 					<p class="mt-1 text-[13px] text-ink-500">Gross {{ formatMoney(s.gross_pay, s.currency) }} · <span class="text-danger">- {{ formatMoney(s.total_deduction, s.currency) }}</span></p>
 				</RouterLink>
-				<div v-if="!data.rows.length" class="card"><EmptyState description="Slips appear here once HR submits payroll for a month." /></div>
+				<div v-if="!data.rows.length" class="card lg:col-span-full"><EmptyState description="Slips appear here once HR submits payroll for a month." /></div>
 			</div>
 			<Pagination v-model="page" :total="data.total" :page-length="pageLength" />
 			<p class="mt-4 flex items-center justify-center gap-1.5 text-xs text-ink-400"><ShieldCheck class="h-3.5 w-3.5" /> Only you and HR can see these. Payslips are never stored offline.</p>
