@@ -396,16 +396,34 @@ def user_command(pin, name):
 
 
 # ------------------------------------------------------------- employee sync
+def _taken_device_ids():
+	return {
+		str(v).strip()
+		for v in frappe.get_all("Employee", filters={"attendance_device_id": ["is", "set"]}, pluck="attendance_device_id")
+	}
+
+
+def _pin_from_employee_id(employee, taken):
+	"""HR-EMP-00007 -> "7" when that number is free, else None."""
+	digits = re.findall(r"\d+", employee or "")
+	pin = str(int(digits[-1])) if digits and 0 < int(digits[-1]) < 10**9 else None
+	return pin if pin and pin not in taken else None
+
+
+def _next_free_pin(taken):
+	n = max((int(v) for v in taken if v.isdigit()), default=0) + 1
+	while str(n) in taken:
+		n += 1
+	return str(n)
+
+
 def fill_missing_device_ids():
 	"""Give every active employee without an Attendance Device ID a numeric one.
 
 	The number comes from the employee ID (HR-EMP-00007 -> 7) so staff can work it out;
 	when that number is taken, the next free number is used. Returns [(employee, name, id)].
 	"""
-	taken = {
-		str(v).strip()
-		for v in frappe.get_all("Employee", filters={"attendance_device_id": ["is", "set"]}, pluck="attendance_device_id")
-	}
+	taken = _taken_device_ids()
 	missing = frappe.get_all(
 		"Employee",
 		filters={"status": "Active", "attendance_device_id": ["is", "not set"]},
@@ -416,20 +434,16 @@ def fill_missing_device_ids():
 	# doesn't shift every later employee
 	pins = {}
 	for emp in missing:
-		digits = re.findall(r"\d+", emp.name)
-		pin = str(int(digits[-1])) if digits and 0 < int(digits[-1]) < 10**9 else None
-		if pin and pin not in taken:
+		pin = _pin_from_employee_id(emp.name, taken)
+		if pin:
 			pins[emp.name] = pin
 			taken.add(pin)
 	# second pass: the rest get numbers after the highest one in use
-	next_free = max((int(v) for v in taken if v.isdigit()), default=0) + 1
 	assigned = []
 	for emp in missing:
 		pin = pins.get(emp.name)
 		if not pin:
-			while str(next_free) in taken:
-				next_free += 1
-			pin = str(next_free)
+			pin = _next_free_pin(taken)
 			taken.add(pin)
 		frappe.db.set_value("Employee", emp.name, "attendance_device_id", pin)
 		assigned.append((emp.name, emp.employee_name, pin))
@@ -465,3 +479,99 @@ def queue_employee_users(device_name):
 		).insert(ignore_permissions=True)
 		queued += 1
 	return queued, skipped
+
+
+# ------------------------------------------------- automatic employee -> device sync
+# Employees reach the terminals without anyone clicking "Send Employees to Device":
+#   * Employee validate: an active employee without an Attendance Device ID gets one.
+#   * Employee on_update: a new, renamed, re-numbered or re-activated employee is queued
+#     for every enabled device.
+#   * hourly sync_employees_to_devices: re-queues whatever a device does not have yet
+#     (a failed send, a device added later, an employee written straight to the DB).
+# A device that is offline simply does not poll; its commands stay Pending and are
+# collected on its first getrequest once it is back online.
+MAX_FAILED_RETRIES = 5  # a command the device keeps rejecting is not re-queued forever
+
+
+def employee_validate(doc, method=None):
+	if doc.status != "Active" or (doc.attendance_device_id or "").strip():
+		return
+	taken = _taken_device_ids()
+	doc.attendance_device_id = _pin_from_employee_id(doc.name, taken) or _next_free_pin(taken)
+
+
+def employee_on_update(doc, method=None):
+	if doc.status != "Active":
+		return
+	pin = str(doc.attendance_device_id or "").strip()
+	if not PIN_RE.match(pin):
+		return
+	if not any(doc.has_value_changed(f) for f in ("attendance_device_id", "employee_name", "status")):
+		return
+	try:
+		for device in frappe.get_all(DOCTYPE, filters={"enabled": 1}, pluck="name"):
+			queue_user(device, doc.name, pin, doc.employee_name or doc.name)
+	except Exception:
+		# never block saving an Employee; the hourly sync picks it up
+		frappe.log_error(title="BB HR: could not queue employee for biometric device")
+
+
+def queue_user(device, employee, pin, name, replace_pending=True):
+	"""Queue a create/update of one employee on one device. Returns True when queued."""
+	command = user_command(pin, name)
+	if replace_pending:
+		# an older pending update for this employee (e.g. previous name) is superseded
+		frappe.db.delete(
+			COMMAND_DOCTYPE,
+			{"device": device, "employee": employee, "status": "Pending", "command": ["like", "DATA UPDATE USERINFO %"]},
+		)
+	frappe.get_doc(
+		{"doctype": COMMAND_DOCTYPE, "device": device, "employee": employee, "status": "Pending", "command": command}
+	).insert(ignore_permissions=True)
+	return True
+
+
+def sync_employees_to_devices():
+	"""Scheduler (hourly): make sure every enabled device has every active employee.
+
+	Fills missing Attendance Device IDs, then queues a user update wherever the device
+	has neither received the current PIN+name (Done) nor has it waiting (Pending/Sent).
+	Returns {device: number queued}.
+	"""
+	devices = frappe.get_all(DOCTYPE, filters={"enabled": 1}, pluck="name")
+	if not devices:
+		return {}
+	fill_missing_device_ids()
+	employees = frappe.get_all(
+		"Employee",
+		filters={"status": "Active", "attendance_device_id": ["is", "set"]},
+		fields=["name", "employee_name", "attendance_device_id"],
+		order_by="name asc",
+	)
+	result = {}
+	for device in devices:
+		rows = frappe.get_all(
+			COMMAND_DOCTYPE,
+			filters={"device": device, "command": ["like", "DATA UPDATE USERINFO %"]},
+			fields=["command", "status"],
+		)
+		ok = {r.command for r in rows if r.status in ("Pending", "Sent", "Done")}
+		failed = {}
+		for r in rows:
+			if r.status == "Failed":
+				failed[r.command] = failed.get(r.command, 0) + 1
+		queued = 0
+		for emp in employees:
+			pin = str(emp.attendance_device_id).strip()
+			if not PIN_RE.match(pin):
+				continue
+			command = user_command(pin, emp.employee_name or emp.name)
+			if command in ok or failed.get(command, 0) >= MAX_FAILED_RETRIES:
+				continue
+			queue_user(device, emp.name, pin, emp.employee_name or emp.name)
+			queued += 1
+		if queued:
+			_log().info("%s: sync queued %s employee(s)", device, queued)
+		result[device] = queued
+	frappe.db.commit()
+	return result

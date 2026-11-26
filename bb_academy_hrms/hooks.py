@@ -261,3 +261,14 @@ after_request = ["bb_academy_hrms.utils.http.after_request"]
 
 # ZKTeco biometric terminals push punches to /iclock/* (ADMS protocol)
 page_renderer = ["bb_academy_hrms.integrations.zkteco_push.ZKPushRenderer"]
+
+doc_events = {
+	"Employee": {
+		"validate": "bb_academy_hrms.integrations.zkteco_push.employee_validate",
+		"on_update": "bb_academy_hrms.integrations.zkteco_push.employee_on_update",
+	}
+}
+
+scheduler_events = {
+	"hourly": ["bb_academy_hrms.integrations.zkteco_push.sync_employees_to_devices"],
+}
